@@ -2,10 +2,10 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: exampleservice
+  name: demosvc
 spec:
   selector:
-    app: myapp
+    app: demoapp
   ports:
     - protocol: "TCP"
       # Port accessible inside cluster
@@ -13,25 +13,31 @@ spec:
       # Port to forward to inside the pod
       targetPort: 8080
       # Port accessible outside cluster
-      nodePort: 30002
+      # nodePort: 30002
   type: LoadBalancer
- 
- 
- 
+
+
 ---
-apiVersion: extensions/v1beta1
+
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: myappdeployment
+  name: demoapp-deployment
+  labels:
+    app: demoapp
 spec:
-  replicas: 5
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demoapp
   template:
     metadata:
       labels:
-        app: myapp
+        app: demoapp
     spec:
       containers:
-        - name: myapp
-          image: jamesquigley/exampleapp:v1.0.0
-          ports:
-            - containerPort: 8080
+      - name: demoapp
+        image: yablokov/demo
+        ports:
+        - containerPort: 8080
+
